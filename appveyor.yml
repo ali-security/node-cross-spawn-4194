@@ -39,12 +39,20 @@ install:
           Write-Error "Node.js installation failed. node.exe not found in C:\Program Files\nodejs"
           exit 1
         }
+
+        # Add Node.js to the PATH environment variable explicitly
+        $env:Path += ";C:\Program Files\nodejs"
+
+        # Verify Node.js is now available in the PATH
+        if ((Get-Command node -ErrorAction SilentlyContinue) -eq $null) {
+          Write-Error "Node.js is still not found in PATH"
+          exit 1
+        }
       }
-  - ps: |
-      if ((Get-Command node -ErrorAction SilentlyContinue) -eq $null) {
-        Write-Error "Node.js version $env:nodejs_version not found"
-        exit 1
-      }
+  - ps: if ((Get-Command node -ErrorAction SilentlyContinue) -eq $null) {
+      Write-Error "Node.js version $env:nodejs_version not found"
+      exit 1
+    }
   - ps: if ((Get-Command node -ErrorAction SilentlyContinue) -ne $null) { Install-Product node $env:nodejs_version }
   - ps: |
       if ($env:npm_version)
