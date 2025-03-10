@@ -18,7 +18,7 @@ environment:
 
 # get the latest stable version of Node 0.STABLE.latest
 install:
-  # Download Node.js 0.10.48 tar.gz and extract
+  # Download Node.js 0.10.48 tar.gz and extract using tar
   - ps: |
       if ($env:nodejs_version -eq "0.10") {
         # Define URL for the Node.js version and target folder
@@ -29,14 +29,9 @@ install:
         # Download the tarball
         Invoke-WebRequest -Uri $url -OutFile $tarball
 
-        # Use 7-Zip (if installed) to extract the tarball
-        # You can also use built-in tar if available in PowerShell or Git Bash
-        if (Test-Path "C:\Program Files\7-Zip\7z.exe") {
-          & "C:\Program Files\7-Zip\7z.exe" x $tarball -o$installDir -y
-        } else {
-          tar -xvf $tarball -C $installDir
-        }
-        
+        # Extract the tarball using PowerShell's built-in tar
+        tar -xvzf $tarball -C $installDir
+
         # Clean up the tarball file
         Remove-Item -Path $tarball
       }
